@@ -27,7 +27,7 @@ if (isset($_POST['add_ebook'])) {
         category, location, coverage, pdf, created_at) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
 
-    $stmt->bind_param("sssssiissssss", 
+    $stmt->bind_param("sssssisssssss", 
         $title, $author, $description, $edition, $publisher, $copyrightyear, 
         $class, $subject, $doi, $category, $location, $coverage, $pdf
     );
@@ -71,7 +71,7 @@ if (isset($_POST['update_ebook'])) {
         class=?, subject=?, doi=?, category=?, location=?, coverage=?, pdf=?, updated_at=NOW() 
         WHERE id=?");
 
-    $stmt->bind_param("sssssiissssssi", 
+    $stmt->bind_param("sssssisssssssi", 
         $title, $author, $description, $edition, $publisher, $copyrightyear, 
         $class, $subject, $doi, $category, $location, $coverage, $pdf, $id
     );
@@ -130,38 +130,16 @@ $locations = $conn->query("SELECT * FROM ebook_location");
                             <a href="?delete=<?= $row['id'] ?>" onclick="return confirm('Delete this ebook?')" class="btn btn-sm btn-danger">Delete</a>
                         </td>
                     </tr>
-
                 <?php endwhile; ?>
                 </tbody>
             </table>
-
-            <?php $ebooks->data_seek(0); while($row = $ebooks->fetch_assoc()): ?>
-                <div class="modal fade" id="editModal<?= $row['id'] ?>" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
-                <div class="modal-dialog modal-lg">
-                    <form method="post" enctype="multipart/form-data" class="modal-content">
-                    <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                    <input type="hidden" name="old_coverage" value="<?= $row['coverage'] ?>">
-                    <input type="hidden" name="old_pdf" value="<?= $row['pdf'] ?>">
-                    <div class="modal-header bg-warning">
-                        <h5 class="modal-title">Edit Ebook</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body row g-2">
-                        <!-- same form fields as your Add Modal -->
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" name="update_ebook" class="btn btn-success">Update</button>
-                    </div>
-                    </form>
-                </div>
-                </div>
-                <?php endwhile; ?>
-
         </div>
     </div>
 </div>
 
-<!-- Add Modal -->
+<!-- ============================= -->
+<!--   Add Modal                   -->
+<!-- ============================= -->
 <div class="modal fade" id="addModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <form method="post" enctype="multipart/form-data" class="modal-content">
@@ -207,6 +185,64 @@ $locations = $conn->query("SELECT * FROM ebook_location");
   </div>
 </div>
 
+<!-- ============================= -->
+<!--   Edit Modals (all rows)      -->
+<!-- ============================= -->
+<?php $ebooks->data_seek(0); while($row = $ebooks->fetch_assoc()): ?>
+<div class="modal fade" id="editModal<?= $row['id'] ?>" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-lg">
+    <form method="post" enctype="multipart/form-data" class="modal-content">
+        <input type="hidden" name="id" value="<?= $row['id'] ?>">
+        <input type="hidden" name="old_coverage" value="<?= $row['coverage'] ?>">
+        <input type="hidden" name="old_pdf" value="<?= $row['pdf'] ?>">
+        <div class="modal-header bg-warning">
+            <h5 class="modal-title">Edit Ebook</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body row g-2">
+            <div class="col-md-6"><label>Title</label><textarea class="form-control" name="title" required><?= $row['title'] ?></textarea></div>
+            <div class="col-md-6"><label>Author</label><textarea class="form-control" name="author" required><?= $row['author'] ?></textarea></div>
+            <div class="col-md-12"><label>Description</label><textarea class="form-control" name="description"><?= $row['description'] ?></textarea></div>
+            <div class="col-md-4"><label>Edition</label><input class="form-control" name="edition" value="<?= $row['edition'] ?>"></div>
+            <div class="col-md-4"><label>Publisher</label><input class="form-control" name="publisher" value="<?= $row['publisher'] ?>"></div>
+            <div class="col-md-4"><label>Copyright Year</label><input type="number" class="form-control" name="copyrightyear" value="<?= $row['copyrightyear'] ?>"></div>
+            <div class="col-md-4"><label>Class</label><input class="form-control" name="class" value="<?= $row['class'] ?>"></div>
+            <div class="col-md-4"><label>Subject</label><input class="form-control" name="subject" value="<?= $row['subject'] ?>"></div>
+            <div class="col-md-4"><label>DOI</label><textarea class="form-control" name="doi"><?= $row['doi'] ?></textarea></div>
+            <div class="col-md-6">
+                <label>Category</label>
+                <select name="category" class="form-select">
+                    <option value="" disabled <?= empty($row['category']) ? 'selected' : '' ?>>---SELECT CATEGORIES---</option>
+                    <?php $categories->data_seek(0); while($cat = $categories->fetch_assoc()): ?>
+                        <option value="<?= $cat['category'] ?>" <?= ($row['category'] == $cat['category']) ? 'selected' : '' ?>>
+                            <?= $cat['category'] ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label>Location</label>
+                <select name="location" class="form-select">
+                    <option value="" disabled <?= empty($row['location']) ? 'selected' : '' ?>>---SELECT SECTION---</option>
+                    <?php $locations->data_seek(0); while($loc = $locations->fetch_assoc()): ?>
+                        <option value="<?= $loc['location'] ?>" <?= ($row['location'] == $loc['location']) ? 'selected' : '' ?>>
+                            <?= $loc['location'] ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+            <div class="col-md-6"><label>Change Cover</label><input type="file" name="coverage" class="form-control"></div>
+            <div class="col-md-6"><label>Change PDF</label><input type="file" name="pdf" class="form-control"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" name="update_ebook" class="btn btn-success">Update</button>
+        </div>
+    </form>
+  </div>
+</div>
+<?php endwhile; ?>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
