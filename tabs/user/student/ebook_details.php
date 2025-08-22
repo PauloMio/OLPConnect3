@@ -1,125 +1,108 @@
 <?php
-include '../../../database/db_connect.php'; // Correct path based on project structure
+include '../../../database/db_connect.php'; // adjust path
 
-// Get ebook ID from query string
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    die("Invalid Ebook ID");
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    die("No ebook selected.");
 }
 
 $id = intval($_GET['id']);
 
-// Fetch ebook from database
 $stmt = $conn->prepare("SELECT * FROM ebooks WHERE id = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $ebook = $stmt->get_result()->fetch_assoc();
 
 if (!$ebook) {
-    die("Ebook not found");
+    die("Ebook not found.");
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title><?= htmlspecialchars($ebook['title']) ?> - Details</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<style>
-body { background-color: #f0f2f5; padding: 20px; font-family: Arial, sans-serif; }
-.card { background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 20px; margin-bottom: 30px; }
-.card1 { display: flex; gap: 20px; flex-wrap: wrap; }
-.cover-photo { width: 300px; height: 400px; object-fit: cover; border-radius: 8px; }
-.details { flex: 1; }
-.details h2 { margin-top: 0; }
-.card2 { background: #121212; color: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-.controls { position: sticky; top: 0; text-align: center; background: #121212; padding: 10px 0; z-index: 10; }
-.controls button { padding: 8px 12px; margin: 0 5px; border: none; background-color: #007BFF; color: white; border-radius: 5px; cursor: pointer; }
-.controls button:hover { background-color: #0056b3; }
-.zoom-info { display: inline-block; margin: 0 10px; font-weight: bold; }
-#pdf-scroll-container { max-height: 800px; overflow-y: auto; padding: 10px 0; }
-#pdf-container { display: flex; flex-direction: column; align-items: center; }
-canvas { margin-bottom: 20px; border-radius: 8px; box-shadow: 0 1px 5px rgba(0,0,0,0.1); }
-</style>
+    <meta charset="UTF-8">
+    <title><?= htmlspecialchars($ebook['title']) ?> - Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .ebook-card img {
+            object-fit: cover;
+            height: 250px;
+            width: 100%;
+        }
+        .pdf-viewer {
+            height: 600px;
+            width: 100%;
+            border: none;
+        }
+        .zoom-control {
+            max-width: 120px;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
-<body oncontextmenu="return false;">
+<body class="bg-light p-4">
+<div class="container">
+    <h2 class="mb-4 text-center">📚 Ebook Details</h2>
 
-<!-- Card 1: Ebook Details -->
-<div class="card card1">
-    <?php if (!empty($ebook['coverage']) && file_exists("../../uploads/coverage/".$ebook['coverage'])): ?>
-        <img src="../../uploads/coverage/<?= htmlspecialchars($ebook['coverage']) ?>" alt="Cover Photo" class="cover-photo">
-    <?php else: ?>
-        <img src="https://via.placeholder.com/300x400?text=No+Cover" class="cover-photo" alt="Default Cover">
-    <?php endif; ?>
+    <div class="row g-4 mb-4">
+        <!-- Card 1: Ebook Info -->
+        <div class="col-12">
+            <div class="card shadow-sm ebook-card">
+                <?php if (!empty($ebook['coverage']) && file_exists("../../uploads/coverage/".$ebook['coverage'])): ?>
+                    <img src="../../uploads/coverage/<?= $ebook['coverage'] ?>" class="card-img-top" alt="Cover Image">
+                <?php else: ?>
+                    <img src="https://via.placeholder.com/600x250?text=No+Cover" class="card-img-top" alt="No Cover">
+                <?php endif; ?>
+                <div class="card-body">
+                    <h3 class="card-title"><?= htmlspecialchars($ebook['title']) ?></h3>
+                    <p class="card-text"><strong>Author:</strong> <?= htmlspecialchars($ebook['author']) ?></p>
+                    <p class="card-text"><strong>Description:</strong> <?= nl2br(htmlspecialchars($ebook['description'])) ?></p>
+                    <p class="card-text"><strong>Category:</strong> <?= htmlspecialchars($ebook['category']) ?></p>
+                    <p class="card-text"><strong>Year:</strong> <?= htmlspecialchars($ebook['copyrightyear']) ?></p>
+                    <p class="card-text"><strong>Location:</strong> <?= htmlspecialchars($ebook['location']) ?></p>
+                </div>
+            </div>
+        </div>
 
-    <div class="details">
-        <h2><?= htmlspecialchars($ebook['title']) ?></h2>
-        <p><strong>Description:</strong> <?= nl2br(htmlspecialchars($ebook['description'])) ?></p>
-        <p><strong>Edition:</strong> <?= htmlspecialchars($ebook['edition']) ?></p>
-        <p><strong>Author:</strong> <?= htmlspecialchars($ebook['author']) ?></p>
-        <p><strong>Category:</strong> <?= htmlspecialchars($ebook['category']) ?></p>
-        <p><strong>Publisher:</strong> <?= htmlspecialchars($ebook['publisher']) ?></p>
-        <p><strong>Copyright Year:</strong> <?= htmlspecialchars($ebook['copyrightyear']) ?></p>
-        <p><strong>Location:</strong> <?= htmlspecialchars($ebook['location']) ?></p>
+        <!-- Card 2: Scrollable PDF -->
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Read PDF</h5>
+
+                    <!-- Zoom control -->
+                    <label for="zoomLevel" class="form-label">Zoom (%)</label>
+                    <input type="number" id="zoomLevel" class="form-control zoom-control" value="100" min="25" max="400">
+
+                    <?php if (!empty($ebook['pdf']) && file_exists("../../uploads/ebooks/".$ebook['pdf'])): ?>
+                        <iframe id="pdfViewer" class="pdf-viewer" 
+                                src="../../uploads/ebooks/<?= $ebook['pdf'] ?>#toolbar=0&navpanes=0&scrollbar=1&zoom=100" 
+                                type="application/pdf">
+                        </iframe>
+                    <?php else: ?>
+                        <p class="text-muted">PDF not available.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <a href="ebook_collection.php" class="btn btn-secondary">Back to Collection</a>
 </div>
 
-<!-- Card 2: PDF Viewer -->
-<div class="card2">
-    <?php if (!empty($ebook['pdf']) && file_exists("../../uploads/ebooks".$ebook['pdf'])): ?>
-    <div class="controls">
-        <button onclick="zoomOut()">-</button>
-        <span id="zoom-info">125%</span>
-        <button onclick="zoomIn()">+</button>
-    </div>
-    <div id="pdf-scroll-container">
-        <div id="pdf-container"></div>
-    </div>
-</div>
-
-<!-- PDF.js -->
-<script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-const url = "<?= '/OLPConnect3/tabs/uploads/ebooks/' . htmlspecialchars($ebook['pdf']) ?>"; // <-- web path
-const container = document.getElementById('pdf-container');
-let scale = 1.00;
-let pdfDoc = null;
+    const zoomInput = document.getElementById('zoomLevel');
+    const pdfViewer = document.getElementById('pdfViewer');
 
-function renderAllPages(pdf) {
-    container.innerHTML = '';
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        pdf.getPage(pageNum).then(page => {
-            const viewport = page.getViewport({ scale });
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            page.render({ canvasContext: ctx, viewport: viewport });
-            container.appendChild(canvas);
-        });
-    }
-}
-
-function zoomIn() {
-    scale = Math.min(scale + 0.25, 3);
-    document.getElementById('zoom-info').textContent = Math.round(scale*100)+"%";
-    renderAllPages(pdfDoc);
-}
-
-function zoomOut() {
-    scale = Math.max(scale - 0.25, 0.5);
-    document.getElementById('zoom-info').textContent = Math.round(scale*100)+"%";
-    renderAllPages(pdfDoc);
-}
-
-pdfjsLib.getDocument(url).promise.then(pdf => {
-    pdfDoc = pdf;
-    renderAllPages(pdfDoc);
-}).catch(err => {
-    container.innerHTML = "<p style='color:red'>Failed to load PDF.</p>";
-    console.error(err);
-});
+    zoomInput.addEventListener('input', function() {
+        let zoom = parseInt(this.value);
+        if (zoom < 25) zoom = 25;
+        if (zoom > 400) zoom = 400;
+        this.value = zoom;
+        const baseSrc = "/OLPConnect3/uploads/ebooks/<?= $ebook['pdf'] ?>"
+        pdfViewer.src = `${baseSrc}#toolbar=0&navpanes=0&scrollbar=1&zoom=${zoom}`;
+    });
 </script>
-<?php endif; ?>
 </body>
 </html>
