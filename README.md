@@ -58,7 +58,7 @@ OLPConnect3/
 ├── tabs/
 │   └── admin
 │   └── uploads
-|   │   └── announcement
+|   │   └── ebooks
 |   │   └── coverage
 |   │   └── announcement
 │   └── user
