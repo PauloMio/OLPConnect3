@@ -1,0 +1,16 @@
+# Ignore files inside uploads folders, but keep the folders
+tabs/uploads/ebooks/*
+tabs/uploads/announcement/*
+tabs/uploads/coverage/*
+
+# Allow .gitkeep (so folders stay in repo)
+!tabs/uploads/ebooks/.gitkeep
+!tabs/uploads/announcement/.gitkeep
+!tabs/uploads/coverage/.gitkeep
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore config overrides (optional)
+php.ini
