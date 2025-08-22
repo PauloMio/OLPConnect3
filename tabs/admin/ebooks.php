@@ -88,7 +88,50 @@ if (isset($_GET['delete'])) {
 }
 
 // ===== FETCH =====
-$ebooks = $conn->query("SELECT * FROM ebooks");
+// $ebooks = $conn->query("SELECT * FROM ebooks");
+
+$where = [];
+$params = [];
+$types = "";
+
+// Search filter (title or author)
+if (!empty($_GET['search'])) {
+    $where[] = "(title LIKE ? OR author LIKE ?)";
+    $search = "%" . $_GET['search'] . "%";
+    $params[] = $search;
+    $params[] = $search;
+    $types .= "ss";
+}
+
+// Category filter
+if (!empty($_GET['category_filter'])) {
+    $where[] = "category = ?";
+    $params[] = $_GET['category_filter'];
+    $types .= "s";
+}
+
+// Sorting (latest-oldest or oldest-latest)
+$order = "DESC"; // default
+if (isset($_GET['sort']) && strtolower($_GET['sort']) === "asc") {
+    $order = "ASC";
+}
+
+// Build final query
+$sql = "SELECT * FROM ebooks";
+if ($where) {
+    $sql .= " WHERE " . implode(" AND ", $where);
+}
+$sql .= " ORDER BY id $order";
+
+// Prepare and execute
+$stmt = $conn->prepare($sql);
+if ($params) {
+    $stmt->bind_param($types, ...$params);
+}
+$stmt->execute();
+$ebooks = $stmt->get_result();
+
+// for dropdowns
 $categories = $conn->query("SELECT * FROM ebook_category");
 $locations = $conn->query("SELECT * FROM ebook_location");
 ?>
@@ -106,6 +149,40 @@ $locations = $conn->query("SELECT * FROM ebook_location");
 
     <div class="card shadow-sm">
         <div class="card-body">
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="search" class="form-control"
+               placeholder="Search by Title or Author"
+               value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+    </div>
+    <div class="col-md-3">
+        <select name="category_filter" class="form-select">
+            <option value="">-- Filter by Category --</option>
+            <?php $categories->data_seek(0); while($cat = $categories->fetch_assoc()): ?>
+                <option value="<?= $cat['category'] ?>"
+                    <?= (isset($_GET['category_filter']) && $_GET['category_filter'] == $cat['category']) ? 'selected' : '' ?>>
+                    <?= $cat['category'] ?>
+                </option>
+            <?php endwhile; ?>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="sort" class="form-select">
+            <option value="desc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'desc') ? 'selected' : '' ?>>
+                Latest to Oldest
+            </option>
+            <option value="asc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'asc') ? 'selected' : '' ?>>
+                Oldest to Latest
+            </option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button type="submit" class="btn btn-primary">Apply</button>
+        <a href="ebooks.php" class="btn btn-secondary">Reset</a>
+    </div>
+</form>
+
             <table class="table table-striped table-hover align-middle">
                 <thead class="table-dark">
                     <tr>
@@ -231,8 +308,34 @@ $locations = $conn->query("SELECT * FROM ebook_location");
                     <?php endwhile; ?>
                 </select>
             </div>
-            <div class="col-md-6"><label>Change Cover</label><input type="file" name="coverage" class="form-control"></div>
-            <div class="col-md-6"><label>Change PDF</label><input type="file" name="pdf" class="form-control"></div>
+            <div class="col-md-6">
+                <label>Current Cover</label>
+                <?php if (!empty($row['coverage'])): ?>
+                    <p>
+                        <a href="../uploads/coverage/<?= $row['coverage'] ?>" target="_blank">
+                            <?= htmlspecialchars($row['coverage']) ?>
+                        </a>
+                    </p>
+                <?php else: ?>
+                    <p class="text-muted">No cover uploaded</p>
+                <?php endif; ?>
+                <label>Change Cover</label>
+                <input type="file" name="coverage" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label>Current PDF</label>
+                <?php if (!empty($row['pdf'])): ?>
+                    <p>
+                        <a href="../uploads/ebooks/<?= $row['pdf'] ?>" target="_blank">
+                            <?= htmlspecialchars($row['pdf']) ?>
+                        </a>
+                    </p>
+                <?php else: ?>
+                    <p class="text-muted">No PDF uploaded</p>
+                <?php endif; ?>
+                <label>Change PDF</label>
+                <input type="file" name="pdf" class="form-control">
+            </div>
         </div>
         <div class="modal-footer">
             <button type="submit" name="update_ebook" class="btn btn-success">Update</button>
