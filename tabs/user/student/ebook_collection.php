@@ -101,7 +101,7 @@ $categories = $conn->query("SELECT * FROM ebook_category");
                             <p class="card-text mb-1"><strong>Category:</strong> <?= htmlspecialchars($row['category']) ?></p>
                             <p class="card-text mb-1"><strong>Year:</strong> <?= htmlspecialchars($row['copyrightyear']) ?></p>
                             <p class="card-text mb-3"><strong>Location:</strong> <?= htmlspecialchars($row['location']) ?></p>
-                            <a href="../../uploads/ebooks/<?= $row['pdf'] ?>" target="_blank" class="btn btn-primary mt-auto">Read More</a>
+                            <a href="ebook_details.php?id=<?= $row['id'] ?>" class="btn btn-primary mt-auto">Read More</a>
                         </div>
                     </div>
                 </div>

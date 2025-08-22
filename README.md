@@ -57,6 +57,7 @@ OLPConnect3/
 └── js/
 ├── tabs/
 │   └── admin
+|   │   └── ebooks.php
 │   └── uploads
 |   │   └── ebooks
 |   │   └── coverage
@@ -64,3 +65,7 @@ OLPConnect3/
 │   └── user
 |   │   └── guest
 |   │   └── student
+|   |   │   └── ebook_collection.php
+|   |   │   └── ebook_collection.php
+├── database/
+│   └── db_connection.php
