@@ -346,7 +346,33 @@ $locations = $conn->query("SELECT * FROM ebook_location");
 </div>
 <?php endwhile; ?>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+    // Auto-submit form logic
+const searchBox = document.getElementById("searchBox");
+const categoryFilter = document.getElementById("categoryFilter");
+const sortSelect = document.getElementById("sortSelect");
+const form = document.getElementById("searchForm");
+
+let debounceTimer;
+
+// Search input: submit after 500ms pause
+searchBox.addEventListener("input", function() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        form.submit();
+    }, 500);
+});
+
+// Category filter: submit immediately on change
+categoryFilter.addEventListener("change", function() {
+    form.submit();
+});
+
+// Sorting: submit immediately on change
+sortSelect.addEventListener("change", function() {
+    form.submit();
+});
+</script>
 </body>
 </html>
 
