@@ -45,6 +45,28 @@ $categories = $conn->query("SELECT * FROM ebook_category");
     <title>Ebook Collection</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar space control */
+        #main-content {
+            transition: margin-left 0.3s ease;
+            flex: 1;
+        }
+
+        /* Open sidebar */
+        .sidebar-open #main-content {
+            margin-left: 220px; /* width of sidebar */
+        }
+
+        /* Closed sidebar */
+        .sidebar-closed #main-content {
+            margin-left: 70px; /* collapsed sidebar width */
+        }
+
         .ebook-card {
             transition: transform 0.2s;
         }
@@ -55,7 +77,7 @@ $categories = $conn->query("SELECT * FROM ebook_category");
         /* Portrait cover wrapper */
         .cover-wrapper {
             width: 100%;
-            height: 350px; /* fixed portrait frame */
+            height: 350px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -69,74 +91,73 @@ $categories = $conn->query("SELECT * FROM ebook_category");
             object-fit: cover;
         }
 
-        /* Keep card body flexible */
         .card-body {
             display: flex;
             flex-direction: column;
         }
-
-        /* Push Read More button to bottom */
         .card-body .btn {
             margin-top: auto;
         }
     </style>
 </head>
-<body class="bg-light p-4">
-<div class="container">
-    <h2 class="mb-4 text-center">📚 Ebook Collection</h2>
+<body class="sidebar-open">
 
-    <!-- Search & Category Filter -->
-    <form method="get" class="row g-2 mb-4">
-        <div class="col-md-6">
-            <input type="text" name="search" id="searchBox" class="form-control"
-                   placeholder="Search by Title or Author"
-                   value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
-        </div>
-        <div class="col-md-4">
-            <select name="category_filter" id="categoryFilter" class="form-select" onchange="this.form.submit()">
-                <option value="">-- Filter by Category --</option>
-                <?php $categories->data_seek(0); while($cat = $categories->fetch_assoc()): ?>
-                    <option value="<?= $cat['category'] ?>"
-                        <?= (isset($_GET['category_filter']) && $_GET['category_filter'] == $cat['category']) ? 'selected' : '' ?>>
-                        <?= $cat['category'] ?>
-                    </option>
-                <?php endwhile; ?>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Apply</button>
-        </div>
-    </form>
+<?php include 'sidebar.php'; ?>
 
-    <div class="row g-4">
-        <?php if ($ebooks->num_rows > 0): ?>
-            <?php while ($row = $ebooks->fetch_assoc()): ?>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="card ebook-card shadow-sm h-100">
-                        <!-- Cover Image -->
-                        <div class="cover-wrapper">
-                            <?php if (!empty($row['coverage']) && file_exists("../../uploads/coverage/".$row['coverage'])): ?>
-                                <img src="../../uploads/coverage/<?= $row['coverage'] ?>" alt="Cover Image">
-                            <?php else: ?>
-                                <img src="https://via.placeholder.com/200x300?text=No+Cover" alt="No Cover">
-                            <?php endif; ?>
-                        </div>
+<div id="main-content">
+    <div class="container p-4">
+        <h2 class="mb-4 text-center">📚 Ebook Collection</h2>
 
-                        <!-- Card Body -->
-                        <div class="card-body">
-                            <h5 class="card-title"><?= htmlspecialchars($row['title']) ?></h5>
-                            <p class="card-text mb-1"><strong>Author:</strong> <?= htmlspecialchars($row['author']) ?></p>
-                            <p class="card-text mb-1"><strong>Category:</strong> <?= htmlspecialchars($row['category']) ?></p>
-                            <p class="card-text mb-1"><strong>Year:</strong> <?= htmlspecialchars($row['copyrightyear']) ?></p>
-                            <p class="card-text mb-3"><strong>Location:</strong> <?= htmlspecialchars($row['location']) ?></p>
-                            <a href="ebook_details.php?id=<?= $row['id'] ?>" class="btn btn-primary">Read More</a>
+        <!-- Search & Category Filter -->
+        <form method="get" class="row g-2 mb-4">
+            <div class="col-md-6">
+                <input type="text" name="search" id="searchBox" class="form-control"
+                       placeholder="Search by Title or Author"
+                       value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+            </div>
+            <div class="col-md-4">
+                <select name="category_filter" id="categoryFilter" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Filter by Category --</option>
+                    <?php $categories->data_seek(0); while($cat = $categories->fetch_assoc()): ?>
+                        <option value="<?= $cat['category'] ?>"
+                            <?= (isset($_GET['category_filter']) && $_GET['category_filter'] == $cat['category']) ? 'selected' : '' ?>>
+                            <?= $cat['category'] ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Apply</button>
+            </div>
+        </form>
+
+        <div class="row g-4">
+            <?php if ($ebooks->num_rows > 0): ?>
+                <?php while ($row = $ebooks->fetch_assoc()): ?>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card ebook-card shadow-sm h-100">
+                            <div class="cover-wrapper">
+                                <?php if (!empty($row['coverage']) && file_exists("../../uploads/coverage/".$row['coverage'])): ?>
+                                    <img src="../../uploads/coverage/<?= $row['coverage'] ?>" alt="Cover Image">
+                                <?php else: ?>
+                                    <img src="https://via.placeholder.com/200x300?text=No+Cover" alt="No Cover">
+                                <?php endif; ?>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title"><?= htmlspecialchars($row['title']) ?></h5>
+                                <p class="card-text mb-1"><strong>Author:</strong> <?= htmlspecialchars($row['author']) ?></p>
+                                <p class="card-text mb-1"><strong>Category:</strong> <?= htmlspecialchars($row['category']) ?></p>
+                                <p class="card-text mb-1"><strong>Year:</strong> <?= htmlspecialchars($row['copyrightyear']) ?></p>
+                                <p class="card-text mb-3"><strong>Location:</strong> <?= htmlspecialchars($row['location']) ?></p>
+                                <a href="ebook_details.php?id=<?= $row['id'] ?>" class="btn btn-primary">Read More</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p class="text-center">No ebooks available.</p>
-        <?php endif; ?>
+                <?php endwhile; ?>
+            <?php else: ?>
+                <p class="text-center">No ebooks available.</p>
+            <?php endif; ?>
+        </div>
     </div>
 </div>
 
@@ -145,6 +166,12 @@ $categories = $conn->query("SELECT * FROM ebook_category");
 // Auto-search (submit form when typing)
 document.getElementById("searchBox").addEventListener("input", function() {
     this.form.submit();
+});
+
+// Toggle sidebar adaptiveness
+document.getElementById("toggleSidebar").addEventListener("click", function() {
+    document.body.classList.toggle("sidebar-open");
+    document.body.classList.toggle("sidebar-closed");
 });
 </script>
 </body>
