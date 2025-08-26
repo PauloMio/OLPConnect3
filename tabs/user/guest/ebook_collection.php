@@ -86,27 +86,24 @@ $categories = $conn->query("SELECT * FROM ebook_category");
     <h2 class="mb-4 text-center">📚 Ebook Collection</h2>
 
     <!-- Search & Category Filter -->
-    <form method="get" class="row g-2 mb-4">
-        <div class="col-md-6">
-            <input type="text" name="search" id="searchBox" class="form-control"
-                   placeholder="Search by Title or Author"
-                   value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
-        </div>
-        <div class="col-md-4">
-            <select name="category_filter" id="categoryFilter" class="form-select" onchange="this.form.submit()">
-                <option value="">-- Filter by Category --</option>
-                <?php $categories->data_seek(0); while($cat = $categories->fetch_assoc()): ?>
-                    <option value="<?= $cat['category'] ?>"
-                        <?= (isset($_GET['category_filter']) && $_GET['category_filter'] == $cat['category']) ? 'selected' : '' ?>>
-                        <?= $cat['category'] ?>
-                    </option>
-                <?php endwhile; ?>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-primary w-100">Apply</button>
-        </div>
-    </form>
+        <form method="get" class="row g-2 mb-4">
+            <div class="col-md-6">
+                <input type="text" name="search" id="searchBox" class="form-control"
+                       placeholder="Search by Title or Author"
+                       value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+            </div>
+            <div class="col-md-4">
+                <select name="category_filter" id="categoryFilter" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Filter by Category --</option>
+                    <?php $categories->data_seek(0); while($cat = $categories->fetch_assoc()): ?>
+                        <option value="<?= $cat['category'] ?>"
+                            <?= (isset($_GET['category_filter']) && $_GET['category_filter'] == $cat['category']) ? 'selected' : '' ?>>
+                            <?= $cat['category'] ?>
+                        </option>
+                    <?php endwhile; ?>
+                </select>
+            </div>
+        </form>
 
     <div class="row g-4">
         <?php if ($ebooks->num_rows > 0): ?>
@@ -118,7 +115,7 @@ $categories = $conn->query("SELECT * FROM ebook_category");
                             <?php if (!empty($row['coverage']) && file_exists("../../uploads/coverage/".$row['coverage'])): ?>
                                 <img src="../../uploads/coverage/<?= $row['coverage'] ?>" alt="Cover Image">
                             <?php else: ?>
-                                <img src="https://via.placeholder.com/200x300?text=No+Cover" alt="No Cover">
+                                <img src="../../../images/icons/defaultcover.png" alt="No Cover">
                             <?php endif; ?>
                         </div>
 
@@ -142,9 +139,16 @@ $categories = $conn->query("SELECT * FROM ebook_category");
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Auto-search (submit form when typing)
-document.getElementById("searchBox").addEventListener("input", function() {
-    this.form.submit();
+// Auto-search with debounce to keep cursor in place
+const searchBox = document.getElementById("searchBox");
+let debounceTimer;
+
+searchBox.addEventListener("input", function() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        // Only submit after user stops typing for 500ms
+        this.form.submit();
+    }, 500); // Adjust delay as needed
 });
 </script>
 </body>

@@ -127,9 +127,6 @@ $categories = $conn->query("SELECT * FROM ebook_category");
                     <?php endwhile; ?>
                 </select>
             </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Apply</button>
-            </div>
         </form>
 
         <div class="row g-4">
@@ -141,7 +138,7 @@ $categories = $conn->query("SELECT * FROM ebook_category");
                                 <?php if (!empty($row['coverage']) && file_exists("../../uploads/coverage/".$row['coverage'])): ?>
                                     <img src="../../uploads/coverage/<?= $row['coverage'] ?>" alt="Cover Image">
                                 <?php else: ?>
-                                    <img src="https://via.placeholder.com/200x300?text=No+Cover" alt="No Cover">
+                                    <img src="../../../images/icons/defaultcover.png" alt="No Cover">
                                 <?php endif; ?>
                             </div>
                             <div class="card-body">
@@ -164,15 +161,16 @@ $categories = $conn->query("SELECT * FROM ebook_category");
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Auto-search (submit form when typing)
-document.getElementById("searchBox").addEventListener("input", function() {
-    this.form.submit();
-});
+// Auto-search with debounce to keep cursor in place
+const searchBox = document.getElementById("searchBox");
+let debounceTimer;
 
-// Toggle sidebar adaptiveness
-document.getElementById("toggleSidebar").addEventListener("click", function() {
-    document.body.classList.toggle("sidebar-open");
-    document.body.classList.toggle("sidebar-closed");
+searchBox.addEventListener("input", function() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+        // Only submit after user stops typing for 500ms
+        this.form.submit();
+    }, 500); // Adjust delay as needed
 });
 </script>
 </body>

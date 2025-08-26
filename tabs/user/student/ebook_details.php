@@ -76,7 +76,7 @@ $ebook = $result->fetch_assoc();
                              style="max-width: 100%; height: auto;" 
                              alt="Cover Image">
                     <?php else: ?>
-                        <img src="https://via.placeholder.com/200x300?text=No+Cover" 
+                        <img src="../../../images/icons/defaultcover.png" 
                              class="img-fluid rounded shadow-sm" 
                              alt="No Cover">
                     <?php endif; ?>

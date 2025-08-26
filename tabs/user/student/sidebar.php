@@ -16,12 +16,6 @@
                 <span class="label">Favorites</span>
             </a>
         </li>
-        <li>
-            <a href="#">
-                <img src="../../../images/icons/user_setup.png" class="icon" alt="Edit Account">
-                <span class="label">Edit Account</span>
-            </a>
-        </li>
     </ul>
 
     <div class="logout-section">

@@ -150,14 +150,17 @@ $locations = $conn->query("SELECT * FROM ebook_location");
     <div class="card shadow-sm">
         <div class="card-body">
 
-<form method="get" class="row g-2 mb-3">
+<form method="get" class="row g-2 mb-3" id="searchForm">
+    <!-- Search by Title or Author -->
     <div class="col-md-3">
-        <input type="text" name="search" class="form-control"
+        <input type="text" name="search" id="searchBox" class="form-control"
                placeholder="Search by Title or Author"
                value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
     </div>
+
+    <!-- Category Filter -->
     <div class="col-md-3">
-        <select name="category_filter" class="form-select">
+        <select name="category_filter" id="categoryFilter" class="form-select">
             <option value="">-- Filter by Category --</option>
             <?php $categories->data_seek(0); while($cat = $categories->fetch_assoc()): ?>
                 <option value="<?= $cat['category'] ?>"
@@ -167,8 +170,10 @@ $locations = $conn->query("SELECT * FROM ebook_location");
             <?php endwhile; ?>
         </select>
     </div>
+
+    <!-- Sorting -->
     <div class="col-md-3">
-        <select name="sort" class="form-select">
+        <select name="sort" id="sortSelect" class="form-select">
             <option value="desc" <?= (isset($_GET['sort']) && $_GET['sort'] == 'desc') ? 'selected' : '' ?>>
                 Latest to Oldest
             </option>
@@ -176,10 +181,6 @@ $locations = $conn->query("SELECT * FROM ebook_location");
                 Oldest to Latest
             </option>
         </select>
-    </div>
-    <div class="col-md-3">
-        <button type="submit" class="btn btn-primary">Apply</button>
-        <a href="ebooks.php" class="btn btn-secondary">Reset</a>
     </div>
 </form>
 
