@@ -52,6 +52,11 @@ $ebook = $result->fetch_assoc();
             z-index: 10;
             border-radius: 5px;
         }
+
+        #zoomIn, #zoomOut {
+            font-size: 1rem; /* bigger text for + and - */
+            padding: 0.5rem 1rem; /* adjust button size */
+        }
     </style>
 </head>
 <body class="bg-light p-4">
