@@ -252,7 +252,7 @@ $locations = $conn->query("SELECT * FROM ebook_location");
                     <?php endwhile; ?>
                 </select>
             </div>
-            <div class="col-md-6"><label>Cover Image</label><input type="file" name="coverage" class="form-control" required></div>
+            <div class="col-md-6"><label>Cover Image</label><input type="file" name="coverage" class="form-control"></div>
             <div class="col-md-6"><label>PDF File</label><input type="file" name="pdf" class="form-control" required></div>
         </div>
         <div class="modal-footer">

@@ -102,13 +102,14 @@ $categories = $conn->query("SELECT * FROM ebook_category");
 </head>
 <body class="sidebar-open">
 
+<body class="bg-light">
 <?php include 'sidebar.php'; ?>
 
-<div id="main-content">
+<div class="content" id="main-content">
     <div class="container p-4">
         <h2 class="mb-4 text-center">📚 Ebook Collection</h2>
-
-        <!-- Search & Category Filter -->
+        
+	<!-- Search & Category Filter -->
         <form method="get" class="row g-2 mb-4">
             <div class="col-md-6">
                 <input type="text" name="search" id="searchBox" class="form-control"
