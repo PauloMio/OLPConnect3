@@ -67,6 +67,8 @@ OLPConnect3/
 |   │   └── guest
 |   │   └── student
 |   |   │   └── ebook_collection.php
-|   |   │   └── ebook_collection.php
+|   |   │   └── ebook_details.php
+|   |   │   └── logIn.php
+|   |   │   └── sidebar.php
 ├── database/
 │   └── db_connection.php
