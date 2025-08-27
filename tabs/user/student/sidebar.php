@@ -1,7 +1,34 @@
-<!-- sidebar.php -->
+<?php
+session_start();
+include '../../../database/db_connect.php';
+
+// Handle logout
+if (isset($_POST['logout']) && isset($_SESSION['account'])) {
+    $id = $_SESSION['account']['id'];
+    $stmt = $conn->prepare("UPDATE account SET status='inactive', loggedout=NOW() WHERE id=?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $stmt->close();
+
+    session_destroy();
+    header("Location: ../../../index.php");
+    exit;
+}
+
+$account = $_SESSION['account'] ?? null;
+?>
+
 <div id="sidebar" class="sidebar">
-    <!-- Toggle Button (fixed left inside sidebar) -->
+
+    <!-- Toggle Button (now below user info) -->
     <button id="toggleSidebar" class="toggle-btn" aria-label="Toggle Sidebar">☰</button>
+
+    <?php if ($account): ?>
+    <div class="account-info p-3 border-bottom">
+        <strong><?= htmlspecialchars($account['firstname'] . " " . $account['lastname']) ?></strong><br>
+        <small>ID: <?= htmlspecialchars($account['schoolid']) ?></small>
+    </div>
+    <?php endif; ?>
 
     <ul class="menu">
         <li>
@@ -18,10 +45,17 @@
         </li>
     </ul>
 
+    <?php if ($account): ?>
     <div class="logout-section">
-        <button class="logout-btn">Log out</button>
+        <form method="POST">
+            <button type="submit" name="logout" class="logout-btn">Log out</button>
+        </form>
     </div>
+    <?php endif; ?>
 </div>
+
+<!-- keep your existing CSS + JS for sidebar -->
+
 
 <style>
 .sidebar {
@@ -43,23 +77,25 @@
     width: 70px;
 }
 
+/* Hide account info when sidebar is collapsed */
+.sidebar.collapsed .account-info {
+    display: none;
+}
+
 /* Toggle button pinned to the left */
 .toggle-btn {
-    position: absolute;
-    left: 0; 
-    top: 10px;
     background: #1a252f;
     border: none;
     color: white;
     font-size: 22px;
-    width: 40px;
+    width: 100%;
     height: 40px;
     cursor: pointer;
-    z-index: 1001;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 0 6px 6px 0;
+    border-radius: 0;
+    margin: 0;
 }
 .toggle-btn:hover {
     background: #34495e;
