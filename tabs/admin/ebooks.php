@@ -237,7 +237,7 @@ $locations = $conn->query("SELECT * FROM ebook_location");
             <div class="col-md-4"><label>DOI</label><textarea class="form-control" name="doi"></textarea></div>
             <div class="col-md-6">
                 <label>Category</label>
-                <select name="category" class="form-select">
+                <select name="category" class="form-select" required>
                     <option value="" selected disabled>---SELECT CATEGORIES---</option>
                     <?php $categories->data_seek(0); while($cat = $categories->fetch_assoc()): ?>
                         <option value="<?= $cat['category'] ?>"><?= $cat['category'] ?></option>
@@ -246,7 +246,7 @@ $locations = $conn->query("SELECT * FROM ebook_location");
             </div>
             <div class="col-md-6">
                 <label>Location</label>
-                <select name="location" class="form-select">
+                <select name="location" class="form-select" required>
                     <option value="" selected disabled>---SELECT SECTION---</option>
                     <?php $locations->data_seek(0); while($loc = $locations->fetch_assoc()): ?>
                         <option value="<?= $loc['location'] ?>"><?= $loc['location'] ?></option>
