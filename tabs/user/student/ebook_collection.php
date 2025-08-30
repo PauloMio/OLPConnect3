@@ -1,7 +1,7 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
-    }
+}
 include '../../../database/db_connect.php';
 
 // Get logged-in account
@@ -21,17 +21,19 @@ $where = [];
 $params = [];
 $types = "";
 
-if (!empty($_GET['search'])) {
+$searchQuery = $_GET['search'] ?? '';
+$categoryFilter = $_GET['category_filter'] ?? '';
+
+if (!empty($searchQuery)) {
     $where[] = "(title LIKE ? OR author LIKE ?)";
-    $search = "%" . $_GET['search'] . "%";
-    $params[] = $search;
-    $params[] = $search;
+    $params[] = "%" . $searchQuery . "%";
+    $params[] = "%" . $searchQuery . "%";
     $types .= "ss";
 }
 
-if (!empty($_GET['category_filter'])) {
+if (!empty($categoryFilter)) {
     $where[] = "category = ?";
-    $params[] = $_GET['category_filter'];
+    $params[] = $categoryFilter;
     $types .= "s";
 }
 
@@ -88,14 +90,15 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; }
             <div class="col-md-6">
                 <input type="text" name="search" id="searchBox" class="form-control"
                        placeholder="Search by Title or Author"
-                       value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+                       value="<?= htmlspecialchars($searchQuery) ?>"
+                       onkeypress="if(event.key==='Enter'){this.form.submit();}">
             </div>
             <div class="col-md-4">
                 <select name="category_filter" id="categoryFilter" class="form-select" onchange="this.form.submit()">
                     <option value="">-- Filter by Category --</option>
                     <?php $categories->data_seek(0); while($cat = $categories->fetch_assoc()): ?>
                         <option value="<?= htmlspecialchars($cat['category']) ?>"
-                            <?= (isset($_GET['category_filter']) && $_GET['category_filter'] == $cat['category']) ? 'selected' : '' ?>>
+                            <?= ($categoryFilter == $cat['category']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($cat['category']) ?>
                         </option>
                     <?php endwhile; ?>
@@ -145,6 +148,10 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; }
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
+// Optional: Auto-submit when textbox cleared (like reference)
+document.getElementById("searchBox").addEventListener("input", function() {
+    if(this.value.trim() === "") this.form.submit();
+});
 
 // Favorite toggle AJAX
 document.querySelectorAll(".favorite-btn").forEach(btn => {
@@ -171,6 +178,5 @@ document.querySelectorAll(".favorite-btn").forEach(btn => {
     });
 });
 </script>
-
 </body>
 </html>
