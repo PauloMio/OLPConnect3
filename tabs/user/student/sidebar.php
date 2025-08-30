@@ -37,7 +37,7 @@ $account = $_SESSION['account'] ?? null;
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="favorites_collection.php">
                 <img src="../../../images/icons/favorite.png" class="icon" alt="Favorites">
                 <span class="label">Favorites</span>
             </a>

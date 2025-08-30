@@ -103,6 +103,9 @@ $ebook = $result->fetch_assoc();
 
             <!-- Zoom Controls (sticky center) -->
             <div class="zoom-controls">
+                <button class="btn btn-sm btn-danger mx-1">
+                    <a  href="ebook_collection.php" style="color: white; text-decoration: none;">← Back to Collection</a>
+                </button>
                 <button id="zoomIn" class="btn btn-sm btn-primary mx-1">+</button>
                 <button id="zoomOut" class="btn btn-sm btn-danger mx-1">-</button>
             </div>

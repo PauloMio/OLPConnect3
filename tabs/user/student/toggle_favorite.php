@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../../../db_connection.php';
+include '../../../database/db_connect.php';
 
 $account_id = $_SESSION['account']['id'] ?? null;
 if (!$account_id) { http_response_code(403); exit('Not logged in'); }
