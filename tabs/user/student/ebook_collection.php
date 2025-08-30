@@ -145,13 +145,6 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; }
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Search debounce
-const searchBox = document.getElementById("searchBox");
-let debounceTimer;
-searchBox.addEventListener("input", function() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => { this.form.submit(); }, 500);
-});
 
 // Favorite toggle AJAX
 document.querySelectorAll(".favorite-btn").forEach(btn => {

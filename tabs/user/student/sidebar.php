@@ -42,6 +42,12 @@ $account = $_SESSION['account'] ?? null;
                 <span class="label">Favorites</span>
             </a>
         </li>
+        <li>
+        <a href="research_list.php">
+            <img src="../../../images/icons/research.png" class="icon" alt="Research">
+            <span class="label">Research List</span>
+        </a>
+    </li>
     </ul>
 
     <?php if ($account): ?>
