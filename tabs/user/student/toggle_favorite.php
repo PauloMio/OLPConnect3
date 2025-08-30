@@ -19,8 +19,12 @@ if ($res->num_rows > 0) {
     $del->bind_param("ii", $account_id, $ebook_id);
     $del->execute();
     $del->close();
-    echo 'removed';
-} else {
+
+    // Redirect to favorites_collection.php
+    header("Location: favorites_collection.php");
+    exit(); // Always exit after redirecting
+}
+else {
     $ins = $conn->prepare("INSERT INTO account_ebook_favorite (account_id, ebook_id, created_at, updated_at) VALUES (?, ?, NOW(), NOW())");
     $ins->bind_param("ii", $account_id, $ebook_id);
     $ins->execute();
