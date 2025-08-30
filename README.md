@@ -68,7 +68,43 @@ OLPConnect3/
 |   │   └── student
 |   |   │   └── ebook_collection.php
 |   |   │   └── ebook_details.php
+|   |   │   └── favorites_collection.php
 |   |   │   └── logIn.php
 |   |   │   └── sidebar.php
+|   |   │   └── toggle_favorites.php
 ├── database/
 │   └── db_connection.php
+
+---------------------------------------------------------
+4. Add folders
+---------------------------------------------------------
+Inside the "tabs" folder make a new folder named:
+uploads
+
+Then inside "uploads" folder make three folders:
+1. ebooks
+2. coverage
+3. announcement
+
+---------------------------------------------------------
+5. Default Users
+---------------------------------------------------------
+Username: admin
+Email: admin@gmail.com
+Password: admin123
+
+Username: boyzmaker
+Email: zyril.evangelista@gmail.com
+Password: password
+
+Username: pjem
+Email: pjem@gmail.com
+Password: password
+
+Username: Nik
+Email: defendingdemigod1975@gmail.com
+Password: password
+
+Username: Olpcc College Library
+Email: olpcccollegelibrary@gmail.com
+Password: Olpcc1949
