@@ -1,5 +1,15 @@
 <?php
-include '../../database/db_connect.php';
+ob_start();
+session_start();
+
+// Protect page (redirect if not logged in)
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login_admin.php");
+    exit;
+}
+
+// Include sidebar (it also includes db_connection.php)
+include 'sidebar.php';
 
 // Handle Create
 if(isset($_POST['create_user'])){
@@ -72,12 +82,19 @@ $result = $conn->query("SELECT * FROM users ORDER BY id DESC");
 </style>
 </head>
 <body>
-<div class="container mt-5">
+
+<div id="main-content" style="padding:20px;">
+    <div class="container mt-5">
     <h2 class="mb-4">Users Management</h2>
 
     <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#createModal">Add User</button>
 
-    <table class="table table-bordered">
+    <!-- Search Box -->
+    <div class="mb-3">
+        <input type="text" id="searchBox" class="form-control" placeholder="Search by username or email...">
+    </div>
+
+    <table class="table table-bordered" id="usersTable">
         <thead>
             <tr>
                 <th>ID</th>
@@ -170,6 +187,7 @@ $result = $conn->query("SELECT * FROM users ORDER BY id DESC");
     </form>
   </div>
 </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -181,6 +199,29 @@ function togglePassword(id){
         input.type = "password";
     }
 }
+
+// Search functionality
+const searchBox = document.getElementById('searchBox');
+const table = document.getElementById('usersTable').getElementsByTagName('tbody')[0];
+
+searchBox.addEventListener('keyup', function(e) {
+    // Trigger only on Enter key or if box is empty
+    if (e.key === "Enter" || this.value === "") {
+        const filter = this.value.toLowerCase();
+        const rows = table.getElementsByTagName('tr');
+        
+        for (let i = 0; i < rows.length; i++) {
+            const username = rows[i].cells[1].textContent.toLowerCase();
+            const email = rows[i].cells[2].textContent.toLowerCase();
+            
+            if (username.includes(filter) || email.includes(filter) || filter === "") {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+});
 </script>
 </body>
 </html>

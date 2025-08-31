@@ -1,14 +1,24 @@
 <?php
-include '../../database/db_connect.php';
+ob_start();
+session_start();
 
-// Fetch programs for dropdown
+// Protect page (redirect if not logged in)
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login_admin.php");
+    exit;
+}
+
+// Include sidebar (it also includes db_connection.php)
+include 'sidebar.php';
+
+// --- Fetch programs for dropdown ---
 $programs = [];
 $res = $conn->query("SELECT program FROM program_user ORDER BY program ASC");
 while ($row = $res->fetch_assoc()) {
     $programs[] = $row['program'];
 }
 
-// Handle search
+// --- Handle search ---
 $search = "";
 $where  = "";
 if (!empty($_GET['search'])) {
@@ -17,7 +27,7 @@ if (!empty($_GET['search'])) {
     $where = "WHERE firstname LIKE '$like' OR lastname LIKE '$like' OR schoolid LIKE '$like'";
 }
 
-// CREATE
+// --- CREATE ---
 if (isset($_POST['create'])) {
     $firstname = $_POST['firstname'];
     $lastname  = $_POST['lastname'];
@@ -36,7 +46,7 @@ if (isset($_POST['create'])) {
     exit;
 }
 
-// UPDATE
+// --- UPDATE ---
 if (isset($_POST['update'])) {
     $id       = $_POST['id'];
     $firstname= $_POST['firstname'];
@@ -53,7 +63,7 @@ if (isset($_POST['update'])) {
     exit;
 }
 
-// DELETE
+// --- DELETE ---
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $stmt = $conn->prepare("DELETE FROM account WHERE id=?");
@@ -64,7 +74,7 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
-// FETCH accounts (with optional search)
+// --- FETCH accounts ---
 $sql = "SELECT * FROM account $where ORDER BY created_at DESC";
 $result = $conn->query($sql);
 ?>
@@ -77,7 +87,9 @@ $result = $conn->query($sql);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
-<body class="p-4">
+<body>
+
+<div id="main-content" class="p-4">
 
     <h2 class="mb-4">Account Management</h2>
 
@@ -89,14 +101,12 @@ $result = $conn->query($sql);
         </form>
     </div>
 
-    <!-- Add + Search row -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">
           + Add Account
         </button>
     </div>
 
-    <!-- Accounts Table -->
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
@@ -116,7 +126,6 @@ $result = $conn->query($sql);
                     <td><?= htmlspecialchars($row['program']) ?></td>
                     <td><?= htmlspecialchars($row['status']) ?></td>
                     <td>
-                        <!-- Edit button -->
                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal<?= $row['id'] ?>">Edit</button>
                         <a href="accounts.php?delete=<?= $row['id'] ?>" onclick="return confirm('Delete this account?')" class="btn btn-sm btn-danger">Delete</a>
                     </td>
@@ -236,6 +245,8 @@ $result = $conn->query($sql);
         </div>
       </div>
     </div>
+
+</div><!-- end main-content -->
 
 <script>
 // Press Enter to submit search

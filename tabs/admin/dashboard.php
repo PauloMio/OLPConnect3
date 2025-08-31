@@ -1,5 +1,14 @@
 <?php
+ob_start();
+// Always start session at the top
+session_start();
 include '../../database/db_connect.php';
+
+// Protect page (redirect if not logged in)
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login_admin.php");
+    exit;
+}
 
 // Capture date range from GET
 $fromDate = isset($_GET['from_date']) && !empty($_GET['from_date']) ? $_GET['from_date'] : null;
@@ -73,6 +82,9 @@ while ($row = $researchDeptResult->fetch_assoc()) {
     $researchDeptLabels[] = $row['Department'];
     $researchDeptData[] = $row['total'];
 }
+
+// Include the sidebar
+include 'sidebar.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,7 +99,10 @@ while ($row = $researchDeptResult->fetch_assoc()) {
 </style>
 </head>
 <body>
-<div class="container mt-5">
+
+<!-- Main Content -->
+<div id="main-content" style="padding:20px;">
+    <div class="container mt-5">
     <h1 class="mb-4">eBook Dashboard</h1>
 
     <!-- Date Picker Filter -->
@@ -184,6 +199,9 @@ while ($row = $researchDeptResult->fetch_assoc()) {
         </div>
     </div>
 </div>
+</div>
+
+
 
 <script>
 const ebookCategoryChart = new Chart(document.getElementById('ebookCategoryChart'), {

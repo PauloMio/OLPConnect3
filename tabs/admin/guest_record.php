@@ -1,5 +1,15 @@
 <?php
-include '../../database/db_connect.php';
+ob_start();
+session_start();
+
+// Protect page (redirect if not logged in)
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login_admin.php");
+    exit;
+}
+
+// Include sidebar (it also includes db_connection.php)
+include 'sidebar.php';
 
 // Get search query if available
 $search = "";
@@ -26,7 +36,8 @@ $result = $conn->query($sql);
 </head>
 <body class="bg-light p-4">
 
-<div class="container">
+<div id="main-content" style="padding:20px;">
+    <div class="container">
   <div class="card shadow-lg p-4 rounded-3">
     <h3 class="mb-4 text-center">Guest Records</h3>
 
@@ -80,6 +91,9 @@ $result = $conn->query($sql);
     </div>
   </div>
 </div>
+</div>
+
+
 
 </body>
 </html>

@@ -1,5 +1,4 @@
 <?php
-session_start();
 include '../../database/db_connect.php';
 
 // Handle logout
@@ -11,7 +10,7 @@ if (isset($_POST['logout']) && isset($_SESSION['user_id'])) {
     $stmt->close();
 
     session_destroy();
-    header("Location: ../../../login_admin.php");
+    header("Location: login_admin.php");
     exit;
 }
 

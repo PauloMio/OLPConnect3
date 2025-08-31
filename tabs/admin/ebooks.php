@@ -1,5 +1,15 @@
 <?php
-include '../../database/db_connect.php';
+ob_start();
+session_start();
+
+// Protect page (redirect if not logged in)
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login_admin.php");
+    exit;
+}
+
+// Include sidebar (it also includes db_connection.php)
+include 'sidebar.php';
 
 // ===== CREATE =====
 if (isset($_POST['add_ebook'])) {
@@ -143,7 +153,9 @@ $locations = $conn->query("SELECT * FROM ebook_location");
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body class="bg-light p-4">
-<div class="container">
+
+<div id="main-content" style="padding:20px;">
+    <div class="container">
     <h2 class="mb-4">📚 Ebooks Management</h2>
     <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addModal">+ Add Ebook</button>
 
@@ -345,34 +357,41 @@ $locations = $conn->query("SELECT * FROM ebook_location");
   </div>
 </div>
 <?php endwhile; ?>
+</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
-    // Auto-submit form logic
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
 const searchBox = document.getElementById("searchBox");
 const categoryFilter = document.getElementById("categoryFilter");
 const sortSelect = document.getElementById("sortSelect");
 const form = document.getElementById("searchForm");
 
-let debounceTimer;
-
-// Search input: submit after 500ms pause
-searchBox.addEventListener("input", function() {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
+// Enter-key search
+searchBox.addEventListener("keydown", function(e) {
+    if (e.key === "Enter") {
+        e.preventDefault(); // prevent default Enter behavior (form submit)
         form.submit();
-    }, 500);
+    }
+});
+
+// Auto-submit if textbox cleared
+searchBox.addEventListener("input", function() {
+    if (this.value.trim() === "") {
+        form.submit();
+    }
 });
 
 // Category filter: submit immediately on change
-categoryFilter.addEventListener("change", function() {
-    form.submit();
-});
+categoryFilter.addEventListener("change", () => form.submit());
 
 // Sorting: submit immediately on change
-sortSelect.addEventListener("change", function() {
-    form.submit();
-});
+sortSelect.addEventListener("change", () => form.submit());
 </script>
+
+
+
 </body>
 </html>
 
