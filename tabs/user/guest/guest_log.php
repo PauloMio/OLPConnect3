@@ -86,6 +86,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <button type="submit" class="btn btn-primary btn-lg">Login as Guest</button>
             </div>
           </form>
+          <div class="text-center mt-3">
+                        <small>
+                            Already have an Account? Click 
+                            <a href="../student/logIn.php" style="color: #0d6efd; text-decoration: underline;">here</a>.<br>
+                        </small>
+                        </div>
         </div>
       </div>
     </div>

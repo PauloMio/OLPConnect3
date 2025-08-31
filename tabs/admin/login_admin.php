@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </form>
                 </div>
             </div>
-            <p class="text-center mt-3 text-muted">&copy; <?php echo date("Y"); ?> Admin Panel</p>
+            <p class="text-center mt-3 text-muted">&copy; <?php echo date("Y"); ?> CITE DEPARTMENT. All rights reserved.</p>
         </div>
     </div>
 </div>

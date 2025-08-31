@@ -41,30 +41,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body class="d-flex flex-column min-vh-100 bg-light">
 
   <div class="d-flex justify-content-center align-items-center flex-grow-1">
-    <div class="card p-4 shadow" style="max-width:400px; width:100%;">
-      <h3 class="mb-3 text-center">Student Login</h3>
+  <div class="card p-4 shadow" style="max-width:400px; width:100%;">
+    <h3 class="mb-3 text-center">Student Login</h3>
 
-      <?php if ($error): ?>
-        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-      <?php endif; ?>
+    <?php if ($error): ?>
+      <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
 
-      <form method="POST">
-        <div class="mb-3">
-          <label class="form-label">Student ID</label>
-          <input type="text" name="schoolid" class="form-control" required>
-        </div>
+    <form method="POST">
+      <div class="mb-3">
+        <label class="form-label">Student ID</label>
+        <input type="text" name="schoolid" class="form-control" required>
+      </div>
 
-        <div class="mb-3">
-          <label class="form-label">Birthdate</label>
-          <input type="date" name="birthdate" class="form-control" required>
-        </div>
+      <div class="mb-3">
+        <label class="form-label">Birthdate</label>
+        <input type="date" name="birthdate" class="form-control" required>
+      </div>
 
-        <button type="submit" class="btn btn-primary w-100">Login</button>
-      </form>
-    </div>
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
   </div>
+</div>
 
-  <?php include 'footer.php'; ?>
+<!-- Links below the card -->
+<div class="text-center mt-3">
+  <small>
+    No account yet? 
+    <a href="sign_up.php" style="color: #0d6efd; text-decoration: underline;">Sign up here</a>.<br>
+    Or you can log in as guest 
+    <a href="../guest/guest_log.php" style="color: #0d6efd; text-decoration: underline;">here</a>.
+  </small>
+</div>
+
+<?php include 'footer.php'; ?>
 
 </body>
 
