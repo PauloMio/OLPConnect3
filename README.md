@@ -67,9 +67,14 @@ OLPConnect3/
 |   │   └── ebook_categories.php
 |   │   └── ebook_location.php
 |   │   └── ebooks.php
+|   │   └── footer.php
+|   │   └── generate_pdf.php
+|   │   └── guest_record.php
+|   │   └── login_admin.php
 |   │   └── program_user.php
 |   │   └── research_category.php
 |   │   └── research.php
+|   │   └── sidebar.php
 │   └── uploads
 |   │   └── ebooks
 |   │   └── coverage
