@@ -51,29 +51,48 @@ Steps:
 ---------------------------------------------------------
 OLPConnect3/
 │
-├── index.php
 ├── css/
+├── database/
+│   └── db_connection.php
 ├── images/
+│   └── icons/
 └── js/
 ├── tabs/
 │   └── admin
-|   │   └── ebooks.php
+|   │   └── dashboard_functions/
+|   |   │   └── 
 |   │   └── accounts.php
+|   │   └── admin.php
+|   │   └── announcement.php
+|   │   └── dashboard.php
+|   │   └── department.php
+|   │   └── ebook_categories.php
+|   │   └── ebook_location.php
+|   │   └── ebooks.php
+|   │   └── program_user.php
+|   │   └── research_category.php
+|   │   └── research.php
 │   └── uploads
 |   │   └── ebooks
 |   │   └── coverage
 |   │   └── announcement
 │   └── user
 |   │   └── guest
+|   |   │   └── ebook_collection.php
+|   |   │   └── ebook_details.php
+|   |   │   └── research_list_guest.php
 |   │   └── student
 |   |   │   └── ebook_collection.php
 |   |   │   └── ebook_details.php
 |   |   │   └── favorites_collection.php
 |   |   │   └── logIn.php
+|   |   │   └── research_list.php
 |   |   │   └── sidebar.php
 |   |   │   └── toggle_favorites.php
-├── database/
-│   └── db_connection.php
+├── .gitignore
+├── index.php
+├── olpconnect3.sql
+├── README.md
 
 ---------------------------------------------------------
 4. Add folders
