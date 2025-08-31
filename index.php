@@ -17,7 +17,7 @@ if ($result->num_rows > 0) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OLPC Connect</title>
+    <title>OLPCC E-Library</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -25,8 +25,19 @@ if ($result->num_rows > 0) {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             display: flex;
-            flex-direction: column;
             min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Sidebar included styles */
+        #main-content {
+            flex-grow: 1;
+            margin-left: 240px; /* default sidebar width */
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar.collapsed + #main-content {
+            margin-left: 70px; /* collapsed sidebar width */
         }
 
         header {
@@ -92,102 +103,96 @@ if ($result->num_rows > 0) {
 </head>
 <body>
 
-<header>
-    <h1>OLPC Connect</h1>
-</header>
+<!-- Include Sidebar -->
+<?php include 'sidebar.php'; ?>
 
-<!-- Image Carousel -->
-<div class="container">
-    <div id="announcementCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <?php foreach($announcements as $index => $announcement): ?>
-                <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
-                    <img src="tabs/uploads/announcement/<?= htmlspecialchars($announcement['image_path']) ?>" alt="Announcement Image">
-                </div>
-            <?php endforeach; ?>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#announcementCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#announcementCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div>
-</div>
+<!-- Main content -->
+<div id="main-content">
+    <header>
+        <h1>OLPCC E-Library</h1>
+    </header>
 
-<!-- Members Section -->
-<section class="section">
-    <h2>Meet Our Members</h2>
-    <div class="members">
-        <div class="card">
-            <h4>Myrna L. Macarubbo, RL, MSLS</h4>
-            <p>Chief Librarian</p>
-        </div>
-        <div class="card">
-            <h4>Jona V. Castilla, RL, LPT</h4>
-            <p>Librarian Elementary Department</p>
-        </div>
-        <div class="card">
-            <h4>Rhea Jane L. Tumaliuan, RL, MLIS</h4>
-            <p>Technical Librarian College-Graduate School Department</p>
-        </div>
-        <div class="card">
-            <h4>Jamaica B. Magmanlac</h4>
-            <p>Assistant Librarian College Department</p>
-        </div>
-        <div class="card">
-            <h4>Rugene M. Mejia, jr., LPT</h4>
-            <p>Support Staff College Department</p>
-        </div>
-    </div>
-</section>
-
-<!-- Services Section -->
-<section class="section" style="background-color: #eef2ff;">
-    <h2>Our Services</h2>
-    <div class="services">
-        <div class="card">
-            <h3>Book Circulation</h3>
-            <p>Borrowing and returning of books.</p>
-        </div>
-        <div class="card">
-            <h3>OLP Connect</h3>
-            <p>Website viewing of eBooks.</p>
-        </div>
-        <div class="card">
-            <h3>Internet Library</h3>
-            <p>Public access computers for students to use.</p>
-        </div>
-    </div>
-</section>
-
-<!-- Footer -->
-<!-- Footer -->
-<footer class="bg-dark text-white text-center py-5 mt-auto">
+    <!-- Image Carousel -->
     <div class="container">
-        <p class="mb-4">&copy; <?php echo date("Y"); ?> CITE DEPARTMENT. All rights reserved.</p>
-        <div class="d-flex justify-content-center gap-4 flex-wrap">
-            <a href="https://www.facebook.com/zyril.evangelista.9" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">Zyril Evangelista</a>
-            <a href="https://www.facebook.com/ernest.ramones.3" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">King Ernest Ramones</a>
-            <a href="https://www.facebook.com/paulo.mio.cortez.panopio" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">Paulo Mio Panopio</a>
+        <div id="announcementCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <?php foreach($announcements as $index => $announcement): ?>
+                    <div class="carousel-item <?= $index === 0 ? 'active' : '' ?>">
+                        <img src="tabs/uploads/announcement/<?= htmlspecialchars($announcement['image_path']) ?>" alt="Announcement Image">
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#announcementCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#announcementCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
     </div>
-</footer>
+
+    <!-- Members Section -->
+    <section class="section">
+        <h2>Meet Our Members</h2>
+        <div class="members">
+            <div class="card">
+                <h4>Myrna L. Macarubbo, RL, MSLS</h4>
+                <p>Chief Librarian</p>
+            </div>
+            <div class="card">
+                <h4>Jona V. Castilla, RL, LPT</h4>
+                <p>Librarian Elementary Department</p>
+            </div>
+            <div class="card">
+                <h4>Rhea Jane L. Tumaliuan, RL, MLIS</h4>
+                <p>Technical Librarian College-Graduate School Department</p>
+            </div>
+            <div class="card">
+                <h4>Jamaica B. Magmanlac</h4>
+                <p>Assistant Librarian College Department</p>
+            </div>
+            <div class="card">
+                <h4>Rugene M. Mejia, jr., LPT</h4>
+                <p>Support Staff College Department</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section" style="background-color: #eef2ff;">
+        <h2>Our Services</h2>
+        <div class="services">
+            <div class="card">
+                <h3>Book Circulation</h3>
+                <p>Borrowing and returning of books.</p>
+            </div>
+            <div class="card">
+                <h3>OLP Connect</h3>
+                <p>Website viewing of eBooks.</p>
+            </div>
+            <div class="card">
+                <h3>Internet Library</h3>
+                <p>Public access computers for students to use.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-5 mt-auto">
+        <div class="container">
+            <p class="mb-4">&copy; <?php echo date("Y"); ?> CITE DEPARTMENT. All rights reserved.</p>
+            <div class="d-flex justify-content-center gap-4 flex-wrap">
+                <a href="https://www.facebook.com/zyril.evangelista.9" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">Zyril Evangelista</a>
+                <a href="https://www.facebook.com/ernest.ramones.3" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">King Ernest Ramones</a>
+                <a href="https://www.facebook.com/paulo.mio.cortez.panopio" target="_blank" rel="noopener noreferrer" class="text-white text-decoration-none">Paulo Mio Panopio</a>
+            </div>
+        </div>
+    </footer>
+</div>
 
 <!-- Bootstrap JS Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        document.querySelectorAll(".external-link").forEach(function(link) {
-            link.addEventListener("click", function(event) {
-                event.preventDefault();
-                const url = event.target.href;
-                window.open(url, '_system');
-            });
-        });
-    });
-</script>
 </body>
 </html>

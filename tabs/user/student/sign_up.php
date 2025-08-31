@@ -2,6 +2,9 @@
 include '../../../database/db_connect.php';
 
 // Handle form submission
+$error = "";
+$success = "";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstname = $conn->real_escape_string($_POST['firstname']);
     $lastname = $conn->real_escape_string($_POST['lastname']);
@@ -14,9 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if ($stmt->execute()) {
         $stmt->close();
-        // Redirect to prevent resubmission
-        header("Location: logIn.php");
-        exit;
+        $success = "Account created successfully!";
     } else {
         $error = "Error: " . $stmt->error;
     }
@@ -30,78 +31,112 @@ if ($result->num_rows > 0) {
         $programs[] = $row['program'];
     }
 }
-
-// Check for success parameter in URL
-if (isset($_GET['success'])) {
-    $success = "Account created successfully!";
-}
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-header text-center bg-primary text-white">
-                        <h4>Sign Up</h4>
-                    </div>
-                    <div class="card-body">
-                        <?php if(isset($success)) { ?>
-                            <div class="alert alert-success"><?php echo $success; ?></div>
-                        <?php } ?>
-                        <?php if(isset($error)) { ?>
-                            <div class="alert alert-danger"><?php echo $error; ?></div>
-                        <?php } ?>
-                        <form method="POST">
-                            <div class="mb-3">
-                                <label for="firstname" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="firstname" name="firstname" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="lastname" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="lastname" name="lastname" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="schoolid" class="form-label">School ID</label>
-                                <input type="text" class="form-control" id="schoolid" name="schoolid" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="program" class="form-label">Program</label>
-                                <select class="form-select" id="program" name="program" required>
-                                    <option value="" disabled selected>Select your program</option>
-                                    <?php foreach($programs as $prog) { ?>
-                                        <option value="<?php echo htmlspecialchars($prog); ?>"><?php echo htmlspecialchars($prog); ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="birthdate" class="form-label">Birthdate</label>
-                                <input type="date" class="form-control" id="birthdate" name="birthdate" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100">Sign Up</button>
-                        </form>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body {
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
 
-                        <div class="text-center mt-3">
-                        <small>
-                            Already have an Account? Click 
-                            <a href="logIn.php" style="color: #0d6efd; text-decoration: underline;">here</a>.<br>
-                        </small>
-                        </div>
+#main-content {
+    flex-grow: 1;
+    margin-left: 240px; /* width of sidebar */
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.collapsed + #main-content {
+    margin-left: 70px;
+}
+
+.signup-wrapper {
+    flex: 1; /* take remaining vertical space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.signup-card {
+    max-width: 500px;
+    width: 100%;
+}
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<?php include '../../../sidebar.php'; ?>
+
+<!-- Main Content -->
+<div id="main-content">
+    <div class="signup-wrapper">
+        <div class="card shadow signup-card">
+            <div class="card-header text-center bg-primary text-white">
+                <h4>Sign Up</h4>
+            </div>
+            <div class="card-body">
+                <?php if ($success): ?>
+                    <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+                <?php endif; ?>
+                <?php if ($error): ?>
+                    <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+                <?php endif; ?>
+
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="firstname" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstname" name="firstname" required>
                     </div>
-                    <div class="card-footer text-center text-muted">
-                        &copy; <?php echo date('Y'); ?> Your School
+                    <div class="mb-3">
+                        <label for="lastname" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastname" name="lastname" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="schoolid" class="form-label">School ID</label>
+                        <input type="text" class="form-control" id="schoolid" name="schoolid" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="program" class="form-label">Program</label>
+                        <select class="form-select" id="program" name="program" required>
+                            <option value="" disabled selected>Select your program</option>
+                            <?php foreach($programs as $prog): ?>
+                                <option value="<?= htmlspecialchars($prog) ?>"><?= htmlspecialchars($prog) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="birthdate" class="form-label">Birthdate</label>
+                        <input type="date" class="form-control" id="birthdate" name="birthdate" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <small>
+                        Already have an account? 
+                        <a href="logIn.php" style="color: #0d6efd; text-decoration: underline;">Log in here</a>.
+                    </small>
                 </div>
             </div>
+
+            <!-- Footer inside card removed; using main footer below -->
         </div>
     </div>
+
+    <!-- Main footer -->
+    <?php include 'footer.php'; ?>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

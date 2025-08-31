@@ -16,13 +16,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->close();
 
     if ($account) {
-        // set status active
         $stmt = $conn->prepare("UPDATE account SET status='active', loggedin=NOW() WHERE id=?");
         $stmt->bind_param("i", $account['id']);
         $stmt->execute();
         $stmt->close();
 
-        $_SESSION['account'] = $account; // store user info
+        $_SESSION['account'] = $account;
         header("Location: ebook_collection.php");
         exit;
     } else {
@@ -30,52 +29,92 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Student Login</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Student Login</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body {
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+#main-content {
+    flex-grow: 1;
+    margin-left: 240px; /* default sidebar width */
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.collapsed + #main-content {
+    margin-left: 70px;
+}
+
+.login-wrapper {
+    flex: 1; /* take remaining vertical space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.login-card {
+    max-width: 400px;
+    width: 100%;
+}
+
+/* Footer spans full width */
+footer {
+    width: 100%;
+}
+</style>
 </head>
-<body class="d-flex flex-column min-vh-100 bg-light">
+<body>
 
-  <div class="d-flex justify-content-center align-items-center flex-grow-1">
-  <div class="card p-4 shadow" style="max-width:400px; width:100%;">
-    <h3 class="mb-3 text-center">Student Login</h3>
+<!-- Include Sidebar -->
+<?php include '../../../sidebar.php'; ?>
 
-    <?php if ($error): ?>
-      <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
+<!-- Main Content -->
+<div id="main-content">
+    <div class="login-wrapper">
+        <div class="card p-4 shadow login-card">
+            <h3 class="mb-3 text-center">Student Login</h3>
 
-    <form method="POST">
-      <div class="mb-3">
-        <label class="form-label">Student ID</label>
-        <input type="text" name="schoolid" class="form-control" required>
-      </div>
+            <?php if ($error): ?>
+                <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+            <?php endif; ?>
 
-      <div class="mb-3">
-        <label class="form-label">Birthdate</label>
-        <input type="date" name="birthdate" class="form-control" required>
-      </div>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label">Student ID</label>
+                    <input type="text" name="schoolid" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Birthdate</label>
+                    <input type="date" name="birthdate" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>
 
-      <button type="submit" class="btn btn-primary w-100">Login</button>
-    </form>
-  </div>
+            <div class="text-center mt-3">
+                <small>
+                    No account yet? 
+                    <a href="sign_up.php" style="color: #0d6efd; text-decoration: underline;">Sign up here</a>.<br>
+                    Or log in as guest 
+                    <a href="../guest/guest_log.php" style="color: #0d6efd; text-decoration: underline;">here</a>.
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Footer -->
+    <?php include 'footer.php'; ?>
 </div>
 
-<!-- Links below the card -->
-<div class="text-center mt-3">
-  <small>
-    No account yet? 
-    <a href="sign_up.php" style="color: #0d6efd; text-decoration: underline;">Sign up here</a>.<br>
-    Or you can log in as guest 
-    <a href="../guest/guest_log.php" style="color: #0d6efd; text-decoration: underline;">here</a>.
-  </small>
-</div>
-
-<?php include 'footer.php'; ?>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

@@ -130,3 +130,12 @@ Password: password
 Username: Olpcc College Library
 Email: olpcccollegelibrary@gmail.com
 Password: Olpcc1949
+
+---------------------------------------------------------
+6. Routes
+---------------------------------------------------------
+"Admin Log In":
+/OLPConnect3/tabs/admin/login_admin.php
+
+"Home Screen":
+/OLPConnect3/index.php
