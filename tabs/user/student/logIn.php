@@ -38,29 +38,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <title>Student Login</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="d-flex justify-content-center align-items-center vh-100 bg-light">
+<body class="d-flex flex-column min-vh-100 bg-light">
 
-  <div class="card p-4 shadow" style="max-width:400px; width:100%;">
-    <h3 class="mb-3 text-center">Student Login</h3>
+  <div class="d-flex justify-content-center align-items-center flex-grow-1">
+    <div class="card p-4 shadow" style="max-width:400px; width:100%;">
+      <h3 class="mb-3 text-center">Student Login</h3>
 
-    <?php if ($error): ?>
-      <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-    <?php endif; ?>
+      <?php if ($error): ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+      <?php endif; ?>
 
-    <form method="POST">
-      <div class="mb-3">
-        <label class="form-label">Student ID</label>
-        <input type="text" name="schoolid" class="form-control" required>
-      </div>
+      <form method="POST">
+        <div class="mb-3">
+          <label class="form-label">Student ID</label>
+          <input type="text" name="schoolid" class="form-control" required>
+        </div>
 
-      <div class="mb-3">
-        <label class="form-label">Birthdate</label>
-        <input type="date" name="birthdate" class="form-control" required>
-      </div>
+        <div class="mb-3">
+          <label class="form-label">Birthdate</label>
+          <input type="date" name="birthdate" class="form-control" required>
+        </div>
 
-      <button type="submit" class="btn btn-primary w-100">Login</button>
-    </form>
+        <button type="submit" class="btn btn-primary w-100">Login</button>
+      </form>
+    </div>
   </div>
 
+  <?php include 'footer.php'; ?>
+
 </body>
+
 </html>

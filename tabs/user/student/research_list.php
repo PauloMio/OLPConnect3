@@ -46,8 +46,13 @@ $categories = $conn->query("SELECT category FROM research_category ORDER BY cate
 <title>Research List</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-body { display: flex; min-height: 100vh; overflow-x: hidden; font-family: Arial, sans-serif; background: #f0f2f5; }
+/* Layout */
+body { display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; font-family: Arial, sans-serif; background: #f0f2f5; }
+#main-content { transition: margin-left 0.3s ease; flex-grow: 1; padding: 20px; }
+.sidebar-open #main-content { margin-left: 240px; }
+.sidebar-closed #main-content { margin-left: 70px; }
 
+/* Sidebar styles (existing) */
 .sidebar { position: fixed; top: 0; left: 0; height: 100vh; width: 240px; background-color: #2c3e50; color: white; display: flex; flex-direction: column; transition: width 0.3s ease; z-index: 1000; overflow: hidden; }
 .sidebar.collapsed { width: 70px; }
 .sidebar.collapsed .account-info { display: none; }
@@ -69,21 +74,21 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; font-family: Arial,
 .logout-btn:hover { background-color: #b02a37; }
 
 /* Main content styling */
-#main-content { transition: margin-left 0.3s ease; flex: 1; padding: 20px; }
-.sidebar-open #main-content { margin-left: 240px; }
-.sidebar-closed #main-content { margin-left: 70px; }
-
 .card { border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 .table thead { background-color: #0d6efd; color: white; }
 .table-hover tbody tr:hover { background-color: #e9f0ff; }
 .form-select, .form-control { border-radius: 10px; }
+
+/* Footer */
+footer { mt-auto; background: #f8f9fa; padding: 1rem 0; text-align: center; border-top: 1px solid #ddd; }
 </style>
 </head>
-<body class="sidebar-open">
+<body class="sidebar-open d-flex flex-column min-vh-100">
 
 <?php include 'sidebar.php'; ?>
 
-<div id="main-content">
+<!-- Main Content -->
+<div id="main-content" class="flex-grow-1">
     <h2 class="mb-4 text-center">Research List</h2>
     
     <div class="card p-4 mb-4">
@@ -144,6 +149,8 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; font-family: Arial,
     </div>
 </div>
 
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 const searchBox = document.getElementById('searchBox');
@@ -153,7 +160,7 @@ searchBox.addEventListener('input', function() {
     }
 });
 
-// Sidebar toggle matching working pages
+// Sidebar toggle
 document.addEventListener('DOMContentLoaded', () => {
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleSidebar');

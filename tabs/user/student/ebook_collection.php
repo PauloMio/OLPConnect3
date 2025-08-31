@@ -61,11 +61,13 @@ $categories = $conn->query("SELECT * FROM ebook_category");
 <title>Ebook Collection</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-body { display: flex; min-height: 100vh; overflow-x: hidden; }
-#main-content { transition: margin-left 0.3s ease; flex: 1; }
+/* Layout */
+body { display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+#main-content { transition: margin-left 0.3s ease; flex-grow: 1; }
 .sidebar-open #main-content { margin-left: 220px; }
 .sidebar-closed #main-content { margin-left: 70px; }
 
+/* Ebook Cards */
 .ebook-card { transition: transform 0.2s; }
 .ebook-card:hover { transform: translateY(-5px); }
 .cover-wrapper { width: 100%; height: 350px; display: flex; justify-content: center; align-items: center; background: #f8f9fa; overflow: hidden; border-bottom:1px solid #ddd; }
@@ -75,13 +77,17 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; }
 .card-body .btn { margin-top: auto; }
 
 .favorite-btn { position: absolute; top: 0.5rem; right: 0.5rem; font-size:1.5rem; border:none; background:none; cursor:pointer; }
+
+/* Footer */
+footer { mt-auto; background: #f8f9fa; padding: 1rem 0; text-align: center; border-top: 1px solid #ddd; }
 </style>
 </head>
-<body class="sidebar-open">
+<body class="sidebar-open d-flex flex-column min-vh-100">
 
 <?php include 'sidebar.php'; ?>
 
-<div class="content" id="main-content">
+<!-- Main Content -->
+<div class="content flex-grow-1" id="main-content">
     <div class="container p-4">
         <h2 class="mb-4 text-center">📚 Ebook Collection</h2>
 
@@ -146,9 +152,11 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; }
     </div>
 </div>
 
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-// Optional: Auto-submit when textbox cleared (like reference)
+// Auto-submit search when cleared
 document.getElementById("searchBox").addEventListener("input", function() {
     if(this.value.trim() === "") this.form.submit();
 });

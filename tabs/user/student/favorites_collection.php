@@ -28,11 +28,13 @@ $result = $stmt->get_result();
 <title>My Favorite Ebooks</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
-body { display: flex; min-height: 100vh; overflow-x: hidden; font-family: Arial, sans-serif; background: #f0f2f5; }
-#main-content { transition: margin-left 0.3s ease; flex: 1; padding: 20px; }
+/* Layout */
+body { display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; font-family: Arial, sans-serif; background: #f0f2f5; }
+#main-content { transition: margin-left 0.3s ease; flex-grow: 1; padding: 20px; }
 .sidebar-open #main-content { margin-left: 220px; }
 .sidebar-closed #main-content { margin-left: 70px; }
 
+/* Ebook Cards */
 .ebook-card { transition: transform 0.2s; border-radius: 12px; overflow: hidden; }
 .ebook-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
 
@@ -43,13 +45,17 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; font-family: Arial,
 .card-body .btn { margin-top: auto; }
 
 .favorite-btn { position: absolute; top: 0.5rem; right: 0.5rem; font-size: 1.5rem; border:none; background:none; cursor:pointer; }
+
+/* Footer */
+footer { mt-auto; background: #f8f9fa; padding: 1rem 0; text-align: center; border-top: 1px solid #ddd; }
 </style>
 </head>
-<body class="sidebar-open">
+<body class="sidebar-open d-flex flex-column min-vh-100">
 
 <?php include 'sidebar.php'; ?>
 
-<div id="main-content">
+<!-- Main Content -->
+<div id="main-content" class="flex-grow-1">
     <h2 class="mb-4 text-center">⭐ My Favorite Ebooks</h2>
     <div class="row g-4">
         <?php if ($result->num_rows > 0): ?>
@@ -88,6 +94,8 @@ body { display: flex; min-height: 100vh; overflow-x: hidden; font-family: Arial,
         <?php endif; ?>
     </div>
 </div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
