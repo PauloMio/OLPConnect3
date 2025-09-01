@@ -5,20 +5,20 @@
 
     <ul class="menu">
         <li>
-            <a href="/OLPConnect3/index.php">
-                <img src="/OLPConnect3/images/icons/home.png" class="icon" alt="Home">
+            <a href="/index.php">
+                <img src="/images/icons/home.png" class="icon" alt="Home">
                 <span class="label">Home</span>
             </a>
         </li>
         <li>
-            <a href="/OLPConnect3/tabs/user/student/logIn.php">
-                <img src="/OLPConnect3/images/icons/login.png" class="icon" alt="Log-In">
+            <a href="/tabs/user/student/logIn.php">
+                <img src="/images/icons/login.png" class="icon" alt="Log-In">
                 <span class="label">Log-In</span>
             </a>
         </li>
         <li>
-            <a href="/OLPConnect3/tabs/user/student/sign_up.php">
-                <img src="/OLPConnect3/images/icons/signup.png" class="icon" alt="Sign Up">
+            <a href="/tabs/user/student/sign_up.php">
+                <img src="/images/icons/signup.png" class="icon" alt="Sign Up">
                 <span class="label">Sign Up</span>
             </a>
         </li>
