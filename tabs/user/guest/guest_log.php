@@ -90,6 +90,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <small>
                             Already have an Account? Click 
                             <a href="../student/logIn.php" style="color: #0d6efd; text-decoration: underline;">here</a>.<br>
+                            Go back to Home Screen? Click
+                            <a href="/index.php" style="color: #0d6efd; text-decoration: underline;">here</a>.<br>
                         </small>
                         </div>
         </div>
