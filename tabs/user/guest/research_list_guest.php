@@ -62,10 +62,38 @@ body {
 }
 </style>
 </head>
-<body>
+<body class="p-0">
+
+<!-- 🌐 Top Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">📚 Digital Library</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'ebook_collection.php' ? 'active' : '' ?>" href="ebook_collection.php">Ebook Collection</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'research_list_guest.php' ? 'active' : '' ?>" href="research_list_guest.php">Research List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>" href="/index.php">🚪 Leave</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- 🧱 Main Container -->
 <div class="container mt-5">
+
     <h2 class="mb-4 text-center">Research List Guest</h2>
-    
+
     <div class="card p-4 mb-4">
         <div class="row g-3">
             <div class="col-md-4">
@@ -75,7 +103,9 @@ body {
                         <?php while($c = $categories->fetch_assoc()): 
                             $selected = ($c['category'] == $filterCategory) ? "selected" : "";
                         ?>
-                        <option value="<?= htmlspecialchars($c['category']) ?>" <?= $selected ?>><?= htmlspecialchars($c['category']) ?></option>
+                        <option value="<?= htmlspecialchars($c['category']) ?>" <?= $selected ?>>
+                            <?= htmlspecialchars($c['category']) ?>
+                        </option>
                         <?php endwhile; ?>
                     </select>
                 </form>
@@ -83,7 +113,8 @@ body {
             <div class="col-md-8">
                 <form method="GET">
                     <input type="hidden" name="filter_category" value="<?= htmlspecialchars($filterCategory) ?>">
-                    <input type="text" name="search" class="form-control" placeholder="Search by Title or Author" value="<?= htmlspecialchars($searchQuery) ?>" 
+                    <input type="text" name="search" class="form-control" placeholder="Search by Title or Author" 
+                           value="<?= htmlspecialchars($searchQuery) ?>" 
                            onkeypress="if(event.key==='Enter'){this.form.submit();}" id="searchBox">
                 </form>
             </div>
