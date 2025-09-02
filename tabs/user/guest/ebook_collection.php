@@ -55,8 +55,35 @@ $categories = $conn->query("SELECT * FROM ebook_category");
         .card-body .btn { margin-top: auto; }
     </style>
 </head>
-<body class="bg-light p-4">
-<div class="container">
+<body class="bg-light p-0">
+
+<!-- 🌐 Top Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">📚 Digital Library</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'ebook_collection.php' ? 'active' : '' ?>" href="ebook_collection.php">Ebook Collection</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'research_list_guest.php' ? 'active' : '' ?>" href="research_list_guest.php">Research List</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link <?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>" href="/index.php">🚪 Leave</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- 🧱 Main Container -->
+<div class="container p-4">
     <h2 class="mb-4 text-center">📚 Ebook Collection</h2>
 
     <!-- Search & Category Filter -->
@@ -80,6 +107,7 @@ $categories = $conn->query("SELECT * FROM ebook_category");
         </div>
     </form>
 
+    <!-- Ebook Grid -->
     <div class="row g-4">
         <?php if ($ebooks->num_rows > 0): ?>
             <?php while ($row = $ebooks->fetch_assoc()): ?>
@@ -109,11 +137,12 @@ $categories = $conn->query("SELECT * FROM ebook_category");
     </div>
 </div>
 
+<!-- Bootstrap Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Reload all ebooks if search box cleared
+    // Reload all ebooks if search box is cleared
     document.getElementById("searchBox").addEventListener("input", function() {
-        if(this.value.trim() === "") {
+        if (this.value.trim() === "") {
             document.getElementById("filterForm").submit();
         }
     });
