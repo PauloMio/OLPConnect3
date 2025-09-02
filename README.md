@@ -259,10 +259,8 @@ Email: olpcccollegelibrary@gmail.com
 Password: Olpcc1949
 
 ---------------------------------------------------------
-8. Routes
+10. Note
 ---------------------------------------------------------
-"Admin Log In":
-http://olpconnect.test:8001/tabs/admin/login_admin.php
+If it doesn't appear on other devices you should open "Windows Defender Firewall" and click the "Allow an app or feature Through WIndows defender Firewall" just by the left side.
 
-"Home Screen":
-http://olpconnect.test:8001/
+Click "Change settings" and make sure "Apache HTTPD" is checked on both Public and Private.
