@@ -92,9 +92,36 @@ if (isset($_POST['update_ebook'])) {
 
 // ===== DELETE =====
 if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
-    $conn->query("DELETE FROM ebooks WHERE id=$id");
+    $id = (int) $_GET['delete']; // sanitize
+
+    // Fetch filenames before deleting
+    $stmt = $conn->prepare("SELECT coverage, pdf FROM ebooks WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $ebook = $result->fetch_assoc();
+
+    if ($ebook) {
+        // Define file paths
+        $coveragePath = __DIR__ . "/../uploads/coverage/" . $ebook['coverage'];
+        $pdfPath = __DIR__ . "/../uploads/ebooks/" . $ebook['pdf'];
+
+        // Delete files if they exist
+        if (file_exists($coveragePath) && is_file($coveragePath)) {
+            unlink($coveragePath);
+        }
+        if (file_exists($pdfPath) && is_file($pdfPath)) {
+            unlink($pdfPath);
+        }
+
+        // Delete record from DB
+        $stmt = $conn->prepare("DELETE FROM ebooks WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+    }
+
     header("Location: ebooks.php");
+    exit;
 }
 
 // ===== FETCH =====

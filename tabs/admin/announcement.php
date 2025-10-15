@@ -31,18 +31,29 @@ if (isset($_POST['add_announcement'])) {
 
 // ===== DELETE =====
 if (isset($_GET['delete_id'])) {
-    $id = $_GET['delete_id'];
+    $id = (int) $_GET['delete_id']; // sanitize input
+
+    // Fetch image filename first
     $stmt = $conn->prepare("SELECT image_path FROM announcements WHERE id = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
-    $result = $stmt->get_result()->fetch_assoc();
-    if ($result && file_exists(__DIR__ . "/../uploads/announcement/" . $result['image_path'])) {
-        unlink(__DIR__ . "/../uploads/announcement/" . $result['image_path']);
+    $result = $stmt->get_result();
+    $announcement = $result->fetch_assoc();
+
+    if ($announcement) {
+        $imagePath = __DIR__ . "/../uploads/announcement/" . $announcement['image_path'];
+
+        // Delete image file if it exists
+        if (file_exists($imagePath) && is_file($imagePath)) {
+            unlink($imagePath);
+        }
+
+        // Now delete record from DB
+        $stmt = $conn->prepare("DELETE FROM announcements WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
     }
 
-    $stmt = $conn->prepare("DELETE FROM announcements WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 }
