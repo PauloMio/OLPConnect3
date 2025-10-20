@@ -154,6 +154,10 @@ if ($result->num_rows > 0) {
                 <p>Assistant Librarian College Department</p>
             </div>
             <div class="card">
+                <h4>Geraldine C. Macarilay</h4>
+                <p>Technical Librarian College-Graduate School Department</p>
+            </div>
+            <div class="card">
                 <h4>Rugene M. Mejia, jr., LPT</h4>
                 <p>Support Staff College Department</p>
             </div>
