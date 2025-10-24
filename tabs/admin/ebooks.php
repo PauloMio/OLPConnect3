@@ -61,21 +61,43 @@ if (isset($_POST['update_ebook'])) {
     $category = $_POST['category'];
     $location = $_POST['location'];
 
-    // Handle file updates
+    // Store old filenames for cleanup
+    $old_coverage = $_POST['old_coverage'];
+    $old_pdf = $_POST['old_pdf'];
+
+    // ===== COVER IMAGE UPDATE =====
     if (!empty($_FILES['coverage']['name'])) {
         $coverage = time() . "_" . basename($_FILES['coverage']['name']);
-        move_uploaded_file($_FILES['coverage']['tmp_name'], __DIR__ . "/../uploads/coverage/$coverage");
+        $coveragePath = __DIR__ . "/../uploads/coverage/$coverage";
+
+        if (move_uploaded_file($_FILES['coverage']['tmp_name'], $coveragePath)) {
+            // ✅ Delete old coverage file if replaced
+            $oldCoveragePath = __DIR__ . "/../uploads/coverage/$old_coverage";
+            if (file_exists($oldCoveragePath) && is_file($oldCoveragePath)) {
+                unlink($oldCoveragePath);
+            }
+        }
     } else {
-        $coverage = $_POST['old_coverage'];
+        $coverage = $old_coverage;
     }
 
+    // ===== PDF UPDATE =====
     if (!empty($_FILES['pdf']['name'])) {
         $pdf = time() . "_" . basename($_FILES['pdf']['name']);
-        move_uploaded_file($_FILES['pdf']['tmp_name'], __DIR__ . "/../uploads/ebooks/$pdf");
+        $pdfPath = __DIR__ . "/../uploads/ebooks/$pdf";
+
+        if (move_uploaded_file($_FILES['pdf']['tmp_name'], $pdfPath)) {
+            // ✅ Delete old PDF file if replaced
+            $oldPdfPath = __DIR__ . "/../uploads/ebooks/$old_pdf";
+            if (file_exists($oldPdfPath) && is_file($oldPdfPath)) {
+                unlink($oldPdfPath);
+            }
+        }
     } else {
-        $pdf = $_POST['old_pdf'];
+        $pdf = $old_pdf;
     }
 
+    // ===== UPDATE DATABASE RECORD =====
     $stmt = $conn->prepare("UPDATE ebooks SET 
         title=?, author=?, description=?, edition=?, publisher=?, copyrightyear=?, 
         class=?, subject=?, doi=?, category=?, location=?, coverage=?, pdf=?, updated_at=NOW() 
@@ -85,10 +107,13 @@ if (isset($_POST['update_ebook'])) {
         $title, $author, $description, $edition, $publisher, $copyrightyear, 
         $class, $subject, $doi, $category, $location, $coverage, $pdf, $id
     );
+
     $stmt->execute();
+
     header("Location: ebooks.php");
     exit;
 }
+
 
 // ===== DELETE =====
 if (isset($_GET['delete'])) {
